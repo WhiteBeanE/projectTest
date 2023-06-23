@@ -7,7 +7,7 @@
   	</settings>
   	
   	<typeAliases>
-	
+		<typeAlias alias="MemberDto" type="com.bsm.projectTest.security.domain.MemberDto"/>
   	</typeAliases>
   	
 </configuration>
