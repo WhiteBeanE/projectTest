@@ -31,6 +31,8 @@ dependencies {
 	
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.1'
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+	implementation 'org.springframework:spring-messaging' // stomp
+	implementation 'org.webjars:sockjs-client' // socketJS
 	
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
