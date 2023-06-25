@@ -6,6 +6,7 @@ import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
 import com.bsm.projectTest.webSocket.handler.WaitListWebSocketHandler;
+import com.bsm.projectTest.webSocket.interceptor.WaitListWebSocketInterceptor;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,12 +18,13 @@ import lombok.extern.slf4j.Slf4j;
 public class WaitListWebSocketConfiguration implements WebSocketConfigurer {
 	
 	private final WaitListWebSocketHandler waitListWebSocketHandler;
+	private final WaitListWebSocketInterceptor waitListWebSocketInterceptor;
 	
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 		log.info("registerWebSocketHandlers");
 		
-		registry.addHandler(waitListWebSocketHandler, "/wait-ws");
+		registry.addHandler(waitListWebSocketHandler, "/wait-ws").addInterceptors(waitListWebSocketInterceptor);
 
 	}
 
