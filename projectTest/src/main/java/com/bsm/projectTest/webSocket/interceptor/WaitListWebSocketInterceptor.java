@@ -2,8 +2,12 @@ package com.bsm.projectTest.webSocket.interceptor;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
@@ -17,7 +21,12 @@ public class WaitListWebSocketInterceptor extends HttpSessionHandshakeIntercepto
 	@Override
 	public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
 			Map<String, Object> attributes) throws Exception {
-		// TODO Auto-generated method stub
-		return super.beforeHandshake(request, response, wsHandler, attributes);
+		log.info("beforeHandshake");
+		ServletServerHttpRequest serverHttpRequest = (ServletServerHttpRequest) request;
+		HttpServletRequest httpServletRequest = serverHttpRequest.getServletRequest();
+		HttpSession httpSession = httpServletRequest.getSession();
+		attributes.put("memberId", httpSession.getAttribute("memberId"));
+		
+		return true;
 	}
 }
