@@ -1,4 +1,4 @@
-package com.bsm.projectTest.jwt.dto;
+package com.bsm.projectTest.jwt.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -34,7 +34,8 @@ mybatis:
   config-location: classpath:configuration.xml
   mapper-locations: classpath:mappers/**/*.xml
 
-#JWT
 jwt:
+  header: Authorization
   secret: SshNsuStlDeo8IZ12oneGgweSoNETythYsysTTSsHy785
+  token-validity-in-seconds: 86400
 

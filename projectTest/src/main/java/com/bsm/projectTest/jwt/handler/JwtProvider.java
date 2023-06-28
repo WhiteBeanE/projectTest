@@ -15,7 +15,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.bsm.projectTest.jwt.dto.TokenDto;
+import com.bsm.projectTest.jwt.domain.TokenDto;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -48,7 +48,6 @@ public class JwtProvider {
 		long now = (new Date().getTime());
 		
 		// Access Token 생성
-		// 86400초면 하룬데 밀리쓰니까 그냥 하루를 주는건가?
 		Date accessTokenExpiresIn = new Date(now + 86400000);
 		String accessToken = Jwts.builder()
 				.setSubject(authentication.getName())

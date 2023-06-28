@@ -32,7 +32,7 @@ public class SecurityConfig {
 	    	.and()
 	    	// 인증 허용 범위 설정
 	    	.authorizeRequests()
-		    	.antMatchers("/login").permitAll()
+		    	.antMatchers("/jwt/login").permitAll()
 				.antMatchers("/dt/**").hasAnyRole("doctor")
 				.anyRequest().authenticated()
 				.and()
