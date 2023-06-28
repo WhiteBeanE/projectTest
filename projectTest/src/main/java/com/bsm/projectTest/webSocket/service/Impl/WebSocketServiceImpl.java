@@ -20,7 +20,6 @@ public class WebSocketServiceImpl implements WebSocketService {
 	
 	@Override
 	public List<ClinicDto> findClinicByStatus(String status) {
-		log.info("a");
 		return webSocketDao.selectClinicListByStatus(status);
 	}
 
@@ -30,6 +29,7 @@ public class WebSocketServiceImpl implements WebSocketService {
 		clinic.setPatient(patient);
 		int result = webSocketDao.updateClinicByPatient(clinic);
 		if(result > 0) {
+			log.info("[modifyClinicByPatient] 상태 변환 성공");
 			msg = "상태 변환 성공";
 		}
 		return msg;
