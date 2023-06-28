@@ -32,7 +32,9 @@ public class MemberDetailsServiceImpl implements UserDetailsService {
 		MemberDto memberDto = securityService.findMemberBymemberId(memberId);
 		
 		if(memberDto != null) {
-			
+			// DTO 컨테이너의 역할만 해야함 그럼 이것도 잘못된거 아닌가?
+			// setter로 하나씩 넣어주어야 하는거 아님?
+			// 아니네 부모꺼 쓸려고 생성자가 무조건 필요하나본데? 아이디랑 비밀번호 떄문에
 			UserDetailDto userDetailDto = new UserDetailDto(memberDto, getRoles(memberDto));
 			log.info("[loadUserByUsername] userDetailsDto : {}", userDetailDto);
 			
