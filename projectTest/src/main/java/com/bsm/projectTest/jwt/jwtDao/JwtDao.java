@@ -6,4 +6,5 @@ import com.bsm.projectTest.jwt.domain.MemberDto;
 
 public interface JwtDao {
 	Optional<MemberDto> findMemberByMemberId(String username);
+	MemberDto findMemberByMemberIdNoAuthentication(String username);
 }

@@ -9,7 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
+// import org.springframework.stereotype.Service;
 
 import com.bsm.projectTest.security.domain.MemberDto;
 import com.bsm.projectTest.security.domain.UserDetailDto;
@@ -18,7 +18,7 @@ import com.bsm.projectTest.security.service.SecurityService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Service
+
 @Slf4j
 @AllArgsConstructor
 public class MemberDetailsServiceImpl implements UserDetailsService {

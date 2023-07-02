@@ -30,6 +30,12 @@ public class SecurityConfig {
 			// JWT를 사용하기 때문에 세션을 사용하지 않는다는 설정
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 	    	.and()
+//	    	.formLogin()
+//    		.loginPage("/login")
+//    		.loginProcessingUrl("/login")
+//    		.usernameParameter("memberId")
+//			.passwordParameter("password")
+//    		.and()
 	    	// 인증 허용 범위 설정
 	    	.authorizeRequests()
 		    	.antMatchers("/jwt/login").permitAll()

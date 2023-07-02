@@ -4,6 +4,7 @@ import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.bsm.projectTest.jwt.domain.MemberDto;
 import com.bsm.projectTest.jwt.domain.TokenDto;
 
 import io.jsonwebtoken.Claims;
@@ -69,6 +71,34 @@ public class JwtProvider {
 				.build();
 	}
 	
+	public TokenDto generateToken(MemberDto member) {
+		// 권한 가져오기
+		String authorities = member.getRoles();
+		
+		long now = (new Date().getTime());
+		
+		// Access Token 생성
+		Date accessTokenExpiresIn = new Date(now + 86400000);
+		String accessToken = Jwts.builder()
+				.setSubject(member.getMemberId())
+				.claim("auth", authorities)
+				.setExpiration(accessTokenExpiresIn)
+				.signWith(key, SignatureAlgorithm.HS256)
+				.compact();
+		
+		// Refresh Token 생성
+		String refreshToken = Jwts.builder()
+				.setExpiration(new Date(now + 86400000))
+				.signWith(key, SignatureAlgorithm.HS256)
+				.compact();
+		
+		return TokenDto.builder()
+				.grantType("Bearer")
+				.accessToken(accessToken)
+				.refreshToken(refreshToken)
+				.build();
+	}
+	
 	// JWT 토근을 복호화하여 토큰에 들어있는 정보를 꺼내는 메소드
 	public Authentication getAuthentication(String accessToken) {
 		// 토큰 복호화
@@ -95,13 +125,13 @@ public class JwtProvider {
 			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 			return true;
 		} catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-			log.info("[vaildateToken] Invaild JWT : {}", e);
+			log.info("[JwtProvider vaildateToken] Invaild JWT : {}", e);
 		} catch (ExpiredJwtException e) {
-			log.info("[vaildateToken] Expired JWT : {}", e);
+			log.info("[JwtProvider vaildateToken] Expired JWT : {}", e);
 		} catch (UnsupportedJwtException e) {
-			log.info("[vaildateToken] Unsupported JWT : {}", e);
+			log.info("[JwtProvider vaildateToken] Unsupported JWT : {}", e);
 		} catch (IllegalArgumentException e) {
-			log.info("[vaildateToken] JWT claims String is empty : {}", e);
+			log.info("[JwtProvider vaildateToken] JWT claims String is empty : {}", e);
 		}
 		return false;
 	}

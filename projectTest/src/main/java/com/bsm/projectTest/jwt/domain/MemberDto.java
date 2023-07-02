@@ -2,19 +2,27 @@ package com.bsm.projectTest.jwt.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 public class MemberDto implements UserDetails {
 
@@ -23,15 +31,21 @@ public class MemberDto implements UserDetails {
 	private String memberId;
 	private String password;
 	
-	private List<String> roles = new ArrayList<>();
+	private String roles;
+//	private List<String> roles = new ArrayList<>();
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		
-		return this.roles.stream()
-				.map(SimpleGrantedAuthority::new)
-				.collect(Collectors.toList());
+		return null;
 	}
+//	@Override
+//	public Collection<? extends GrantedAuthority> getAuthorities() {
+//		
+//		return this.roles.stream()
+//				.map(SimpleGrantedAuthority::new)
+//				.collect(Collectors.toList());
+//	}
 
 	@Override
 	public String getPassword() {

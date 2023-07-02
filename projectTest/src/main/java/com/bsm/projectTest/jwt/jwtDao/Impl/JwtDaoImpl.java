@@ -20,7 +20,13 @@ public class JwtDaoImpl implements JwtDao {
 	
 	@Override
 	public Optional<MemberDto> findMemberByMemberId(String username) {
-		log.info("[findMemberByMemberId] username : {}", username);
+		log.info("[JwtDaoImpl findMemberByMemberId] username : {}", username);
+		return session.selectOne("findMemberByMemberId", username);
+	}
+
+	@Override
+	public MemberDto findMemberByMemberIdNoAuthentication(String username) {
+		log.info("[JwtDaoImpl findMemberByMemberIdNoAuthentication] username : {}", username);
 		return session.selectOne("findMemberByMemberId", username);
 	}
 
