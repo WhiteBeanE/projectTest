@@ -11,4 +11,5 @@ public class MemberLoginDto {
 	
 	private String memberId;
 	private String password;
+	private String roles;
 }

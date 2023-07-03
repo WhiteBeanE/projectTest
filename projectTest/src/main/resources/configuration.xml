@@ -9,7 +9,7 @@
   	<typeAliases>
 		<typeAlias alias="securityMemberDto" type="com.bsm.projectTest.security.domain.MemberDto"/>
 		<typeAlias alias="ClinicDto" type="com.bsm.projectTest.webSocket.domain.ClinicDto"/>
-		<typeAlias alias="JwtMemberDto" type="com.bsm.projectTest.jwt.domain.MemberDto"/>
+		<typeAlias alias="JwtMemberLoginDto" type="com.bsm.projectTest.jwt.domain.MemberLoginDto"/>
   	</typeAliases>
   	
 </configuration>

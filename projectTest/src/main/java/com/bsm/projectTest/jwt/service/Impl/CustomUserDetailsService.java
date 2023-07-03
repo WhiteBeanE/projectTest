@@ -1,13 +1,17 @@
 package com.bsm.projectTest.jwt.service.Impl;
 
-import org.springframework.security.core.userdetails.User;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.bsm.projectTest.jwt.domain.MemberDto;
+import com.bsm.projectTest.jwt.domain.MemberLoginDto;
 import com.bsm.projectTest.jwt.jwtDao.JwtDao;
 
 import lombok.RequiredArgsConstructor;
@@ -19,25 +23,34 @@ import lombok.extern.slf4j.Slf4j;
 public class CustomUserDetailsService implements UserDetailsService {
 	
 	private final JwtDao jwtDao;
-	private final PasswordEncoder passwordEncoder;
 	
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		log.info("[CustomUserDetailsService loadUserByUsername] username : {}", username);
-		return jwtDao.findMemberByMemberId(username)
-				.map(this::createUserDetails)
-				.orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다"));
+	public UserDetails loadUserByUsername(String memberId) throws UsernameNotFoundException {
+		log.info("[CustomUserDetailsService loadUserByUsername] memberId : {}", memberId);
+		MemberLoginDto member =  jwtDao.findMemberByMemberIdNoAuthentication(memberId);
+		
+		if (member != null) {
+					
+			MemberDto memberDto = createUserDetails(member);
+			log.info("[CustomUserDetailsService loadUserByUsername] memberDto : {}", memberDto);
+			
+			return memberDto;
+		}
+		
+		return null;
 	}
 	
 	// 해당하는 User의 데이터가 존재한다면 UserDetails 객체로 만들어서 리턴
-	private UserDetails createUserDetails(MemberDto memberDto) {
-		log.info("[CustomUserDetailsService createUserDetails] memberDto : {}", memberDto);
-		
-		return User.builder()
-				.username(memberDto.getUsername())
-				.password(passwordEncoder.encode(memberDto.getPassword()))
-				.roles(memberDto.getRoles())
-				.build();
+	private MemberDto createUserDetails(MemberLoginDto member) {
+		log.info("[CustomUserDetailsService createUserDetails] memberDto : {}", member);
+		Collection<GrantedAuthority> roles = new ArrayList<>();
+		roles.add(new SimpleGrantedAuthority("ROLE_" + member.getRoles()));
+		MemberDto memberDto = new MemberDto();
+		memberDto.setMemberId(member.getMemberId());
+		memberDto.setPassword(member.getPassword());
+		memberDto.setRoles(roles);
+		return memberDto;
+				
 	}
 
 }

@@ -57,47 +57,47 @@ public class JwtProvider {
 				.setExpiration(accessTokenExpiresIn)
 				.signWith(key, SignatureAlgorithm.HS256)
 				.compact();
-		
 		// Refresh Token 생성
 		String refreshToken = Jwts.builder()
 				.setExpiration(new Date(now + 86400000))
 				.signWith(key, SignatureAlgorithm.HS256)
 				.compact();
-		
-		return TokenDto.builder()
-				.grantType("Bearer")
-				.accessToken(accessToken)
-				.refreshToken(refreshToken)
-				.build();
+		TokenDto tokenDto = new TokenDto("Bearer", accessToken, refreshToken);
+		return tokenDto;
+//		return TokenDto.builder()
+//				.grantType("Bearer")
+//				.accessToken(accessToken)
+//				.refreshToken(refreshToken)
+//				.build();
 	}
 	
-	public TokenDto generateToken(MemberDto member) {
-		// 권한 가져오기
-		String authorities = member.getRoles();
-		
-		long now = (new Date().getTime());
-		
-		// Access Token 생성
-		Date accessTokenExpiresIn = new Date(now + 86400000);
-		String accessToken = Jwts.builder()
-				.setSubject(member.getMemberId())
-				.claim("auth", authorities)
-				.setExpiration(accessTokenExpiresIn)
-				.signWith(key, SignatureAlgorithm.HS256)
-				.compact();
-		
-		// Refresh Token 생성
-		String refreshToken = Jwts.builder()
-				.setExpiration(new Date(now + 86400000))
-				.signWith(key, SignatureAlgorithm.HS256)
-				.compact();
-		
-		return TokenDto.builder()
-				.grantType("Bearer")
-				.accessToken(accessToken)
-				.refreshToken(refreshToken)
-				.build();
-	}
+//	public TokenDto generateToken(MemberDto member) {
+//		// 권한 가져오기
+//		String authorities = member.getRoles();
+//		
+//		long now = (new Date().getTime());
+//		
+//		// Access Token 생성
+//		Date accessTokenExpiresIn = new Date(now + 86400000);
+//		String accessToken = Jwts.builder()
+//				.setSubject(member.getMemberId())
+//				.claim("auth", authorities)
+//				.setExpiration(accessTokenExpiresIn)
+//				.signWith(key, SignatureAlgorithm.HS256)
+//				.compact();
+//		
+//		// Refresh Token 생성
+//		String refreshToken = Jwts.builder()
+//				.setExpiration(new Date(now + 86400000))
+//				.signWith(key, SignatureAlgorithm.HS256)
+//				.compact();
+//		
+//		return TokenDto.builder()
+//				.grantType("Bearer")
+//				.accessToken(accessToken)
+//				.refreshToken(refreshToken)
+//				.build();
+//	}
 	
 	// JWT 토근을 복호화하여 토큰에 들어있는 정보를 꺼내는 메소드
 	public Authentication getAuthentication(String accessToken) {

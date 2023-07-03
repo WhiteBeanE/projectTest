@@ -20,11 +20,11 @@ public class JwtController {
 	
 	private final JwtService jwtService;
 	
-	@PostMapping("/login")
-	public TokenDto login(@RequestBody MemberLoginDto memberDto) {
-		log.info("[JwtController login] memberDto : {}", memberDto);
-		TokenDto tokenDto = jwtService.login(memberDto);
-		return tokenDto;
-	}
+//	@PostMapping("/login")
+//	public TokenDto login(@RequestBody MemberLoginDto memberDto) {
+//		log.info("[JwtController login] memberDto : {}", memberDto);
+//		TokenDto tokenDto = jwtService.login(memberDto);
+//		return tokenDto;
+//	}
 	
 }
