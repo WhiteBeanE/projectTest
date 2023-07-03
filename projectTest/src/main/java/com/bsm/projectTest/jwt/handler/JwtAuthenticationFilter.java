@@ -1,11 +1,13 @@
 package com.bsm.projectTest.jwt.handler;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.security.core.Authentication;
@@ -30,7 +32,11 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 		log.info("[JwtAuthenticationFilter doFilter]");
 		
 		// 1. Request Header에서 JWT 추출
-		String token = resolveToken((HttpServletRequest) request);
+//		String token = resolveToken((HttpServletRequest) request);
+		String token = (String)Arrays.stream(((HttpServletRequest) request).getCookies())
+				.filter(c -> c.getName().equals("Token"))
+				.findFirst().map(Cookie::getValue).orElse(null);
+		
 		log.info("[JwtAuthenticationFilter doFilter] token : {}", token);
 		
 		// 2. validateToken으로 토큰 유효성 검사

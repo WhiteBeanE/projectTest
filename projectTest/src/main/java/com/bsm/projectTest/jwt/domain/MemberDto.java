@@ -31,21 +31,14 @@ public class MemberDto implements UserDetails {
 	private String memberId;
 	private String password;
 	
-	private String roles;
+//	private String roles;
 //	private List<String> roles = new ArrayList<>();
+	Collection<GrantedAuthority> roles;
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		
-		return null;
+		return roles;
 	}
-//	@Override
-//	public Collection<? extends GrantedAuthority> getAuthorities() {
-//		
-//		return this.roles.stream()
-//				.map(SimpleGrantedAuthority::new)
-//				.collect(Collectors.toList());
-//	}
 
 	@Override
 	public String getPassword() {

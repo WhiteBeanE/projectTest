@@ -6,6 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
 import com.bsm.projectTest.jwt.domain.MemberDto;
+import com.bsm.projectTest.jwt.domain.MemberLoginDto;
 import com.bsm.projectTest.jwt.jwtDao.JwtDao;
 
 import lombok.RequiredArgsConstructor;
@@ -19,15 +20,15 @@ public class JwtDaoImpl implements JwtDao {
 	private final SqlSession session;
 	
 	@Override
-	public Optional<MemberDto> findMemberByMemberId(String username) {
-		log.info("[JwtDaoImpl findMemberByMemberId] username : {}", username);
-		return session.selectOne("findMemberByMemberId", username);
+	public Optional<MemberDto> findMemberByMemberId(String memberId) {
+		log.info("[JwtDaoImpl findMemberByMemberId] memberId : {}", memberId);
+		return session.selectOne("findMemberByMemberId", memberId);
 	}
 
 	@Override
-	public MemberDto findMemberByMemberIdNoAuthentication(String username) {
-		log.info("[JwtDaoImpl findMemberByMemberIdNoAuthentication] username : {}", username);
-		return session.selectOne("findMemberByMemberId", username);
+	public MemberLoginDto findMemberByMemberIdNoAuthentication(String memberId) {
+		log.info("[JwtDaoImpl findMemberByMemberIdNoAuthentication] memberId : {}", memberId);
+		return session.selectOne("findMemberByMemberId", memberId);
 	}
 
 }

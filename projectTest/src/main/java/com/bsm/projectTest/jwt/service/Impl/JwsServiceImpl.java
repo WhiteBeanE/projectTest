@@ -31,6 +31,21 @@ public class JwsServiceImpl implements JwtService {
 	private final JwtDao jwtDao;
 	
 	@Override
+	public TokenDto login(MemberDto member) {
+		
+		UsernamePasswordAuthenticationToken authenticationToken = 
+				new UsernamePasswordAuthenticationToken(member.getMemberId(), member.getPassword(), member.getAuthorities());
+		log.info("[JwsServiceImpl login] authenticationToken : {}", authenticationToken);
+		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+		log.info("[JwsServiceImpl login] authentication : {}", authentication);
+		
+		TokenDto tokenDto = jwtProvider.generateToken(authentication);
+		log.info("[JwsServiceImpl login] tokenDto : {}", tokenDto);
+		
+		return tokenDto;
+	}
+	
+	@Override
 	public TokenDto login(MemberLoginDto memberDto) {
 		log.info("[JwsServiceImpl login] memberDto : {}", memberDto);
 		
