@@ -31,4 +31,10 @@ public class JwtDaoImpl implements JwtDao {
 		return session.selectOne("findMemberByMemberId", memberId);
 	}
 
+	@Override
+	public MemberDto selectUserByUserName(String memberId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -144,4 +144,12 @@ public class JwtProvider {
 		}
 	}
 	
+	   /**
+     * Claim 에서 username 가져오기
+     */
+    public String getUsernameFromToken(String token) {
+        String username = String.valueOf(parseClaims(token).get("username"));
+        log.info("getUsernameFormToken subject = {}", username);
+        return username;
+    }
 } // Class

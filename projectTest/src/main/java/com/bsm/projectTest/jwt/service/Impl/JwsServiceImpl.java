@@ -1,12 +1,16 @@
 package com.bsm.projectTest.jwt.service.Impl;
 
-import java.util.List;
-import java.util.Optional;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +20,8 @@ import com.bsm.projectTest.jwt.domain.TokenDto;
 import com.bsm.projectTest.jwt.handler.JwtProvider;
 import com.bsm.projectTest.jwt.jwtDao.JwtDao;
 import com.bsm.projectTest.jwt.service.JwtService;
+import com.bsm.projectTest.security.dao.SecurityDao;
+import com.bsm.projectTest.security.domain.UserDetailDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +35,7 @@ public class JwsServiceImpl implements JwtService {
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 	private final JwtProvider jwtProvider;
 	private final JwtDao jwtDao;
+	private final SecurityDao securityDao;
 	
 	@Override
 	public TokenDto login(MemberDto member) {
@@ -77,5 +84,24 @@ public class JwsServiceImpl implements JwtService {
 		// TokenDto tokenDto = jwtProvider.generateToken(member);
 		
 		return tokenDto;
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String memberId) {
+		com.bsm.projectTest.security.domain.MemberDto member =  securityDao.selectMemberByMemberId(memberId);
+		if(member != null) {
+			UserDetailDto userDetailDto = new UserDetailDto(member, getRoles(member));
+			log.info("[loadUserByUsername] userDetailsDto : {}", userDetailDto);
+			
+			return userDetailDto;
+		}
+		throw new BadCredentialsException("No such id or wrong password");
+	}
+	
+	private Collection<GrantedAuthority> getRoles(com.bsm.projectTest.security.domain.MemberDto memberDto) {
+		Collection<GrantedAuthority> roles = new ArrayList<>();
+		roles.add(new SimpleGrantedAuthority("ROLE_" + memberDto.getMemberRole()));
+		
+		return roles;
 	}
 }

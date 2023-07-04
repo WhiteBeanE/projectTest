@@ -55,17 +55,18 @@ public class UserLoginSuccessHandler implements AuthenticationSuccessHandler{
 		//인증성공한 member의 정보를 가지고 토큰 생성 후 반환
 		TokenDto tokenDto = jwtService.login(memberInfo);
 		
-		log.info("[UserLoginSuccessHandler onAuthenticationSuccess] tokenDto : {}", tokenDto);
-		System.out.println("tokenDto " +tokenDto);
-		response.setHeader("Authorization", tokenDto.toString());
+		response.setHeader("Authorization", "Bearer " + tokenDto);
 		
-		// JWT 쿠키 저장(쿠키 명 : token)
-		Cookie cookie = new Cookie("Token", "Bearer " + tokenDto.getAccessToken());
-		cookie.setPath("/");
-		cookie.setMaxAge(60 * 60 * 24 * 1); // 유효기간 1일
-		// httoOnly 옵션을 추가해 서버만 쿠키에 접근할 수 있게 설정
-		cookie.setHttpOnly(true);
-		response.addCookie(cookie);
+		log.info("[UserLoginSuccessHandler onAuthenticationSuccess] tokenDto : {}", tokenDto);
+//		response.setHeader("Authorization", tokenDto.toString());
+		
+//		// JWT 쿠키 저장(쿠키 명 : token)
+//		Cookie cookie = new Cookie("Token", "Bearer " + tokenDto.getAccessToken());
+//		cookie.setPath("/");
+//		cookie.setMaxAge(60 * 60 * 24 * 1); // 유효기간 1일
+//		// httoOnly 옵션을 추가해 서버만 쿠키에 접근할 수 있게 설정
+//		cookie.setHttpOnly(true);
+//		response.addCookie(cookie);
 		
 //		// 토큰을 JSON 형식으로 변환
 //        String tokenJson = objectMapper.writeValueAsString(tokenDto);
