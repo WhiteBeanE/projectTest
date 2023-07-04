@@ -12,8 +12,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.bsm.projectTest.jwt.handler.JwtAuthenticationFilter;
 import com.bsm.projectTest.jwt.handler.JwtProvider;
+import com.bsm.projectTest.jwt.service.JwtService;
 import com.bsm.projectTest.security.security.handler.UserLoginFailureHandler;
 import com.bsm.projectTest.security.security.handler.UserLoginSuccessHandler;
+import com.bsm.projectTest.security.service.Impl.MemberDetailsServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +26,7 @@ public class SecurityConfig {
 	
 	// JWT용 시큐리티 재설정 기존 시큐리티 하단 주석처리
 	private final JwtProvider jwtProvider;
+	private final JwtService jwtService;
 	private final UserLoginSuccessHandler userLoginSuccessHandler;
 	private final UserLoginFailureHandler userLoginFailureHandler;
 	
@@ -51,7 +54,7 @@ public class SecurityConfig {
 				.and()
 			// 보안 필터 체인에 사용자 정의 필터를 추가하는 역할
 			// 기본 인증 필터 중 하나인 UsernamePasswordAuthenticationFilter 이전에 사용자 정의 필터인 JwtAuthenticationFilter를 실행하도록 설정
-			.addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
+			.addFilterBefore(new JwtAuthenticationFilter(jwtProvider, jwtService), UsernamePasswordAuthenticationFilter.class);
 		return httpSecurity.build();
 	}
 	

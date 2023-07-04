@@ -10,10 +10,20 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
+
+import com.bsm.projectTest.jwt.service.JwtService;
+import com.bsm.projectTest.security.domain.MemberDto;
+import com.bsm.projectTest.security.domain.UserDetailDto;
+import com.bsm.projectTest.security.service.SecurityService;
+import com.bsm.projectTest.security.service.Impl.MemberDetailsServiceImpl;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
 	private final JwtProvider jwtProvider;
+	private final JwtService jwtService;
 	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) 
@@ -32,11 +43,37 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 		log.info("[JwtAuthenticationFilter doFilter]");
 		
 		// 1. Request Header에서 JWT 추출
-//		String token = resolveToken((HttpServletRequest) request);
-		String token = (String)Arrays.stream(((HttpServletRequest) request).getCookies())
-				.filter(c -> c.getName().equals("Token"))
-				.findFirst().map(Cookie::getValue).orElse(null);
-		
+		String token = resolveToken((HttpServletRequest) request);
+//		String token = (String)Arrays.stream(((HttpServletRequest) request).getCookies())
+//				.filter(c -> c.getName().equals("Token"))
+//				.findFirst().map(Cookie::getValue).orElse(null);
+		String authorization = ((HttpServletRequest) request).getHeader("Authorization"); // 헤더 파싱
+        String username = "";
+
+        if (authorization != null && authorization.startsWith("Bearer ")) { // Bearer 토큰 파싱
+//            token = authorization.substring(7); // jwt token 파싱
+            username = jwtProvider.getUsernameFromToken(token); // username 얻어오기
+        }
+
+        // 현재 SecurityContextHolder 에 인증객체가 있는지 확인
+        if (username != "" && SecurityContextHolder.getContext().getAuthentication() == null) {
+            log.info("[JwtAuthenticationFilter doFilter] jwt filter = {}", username);
+            UserDetails userDetails = jwtService.loadUserByUsername(username);
+            // 토큰 유효여부 확인
+            log.info("[JwtAuthenticationFilter doFilter] JWT Filter token = {}", token);
+            log.info("[JwtAuthenticationFilter doFilter] JWT Filter userDetails = {}", userDetails.getUsername());
+            if (jwtProvider.vaildateToken(token)) {
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
+                        = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+                usernamePasswordAuthenticationToken
+                        .setDetails(new WebAuthenticationDetailsSource().buildDetails((HttpServletRequest) request));
+
+                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            }
+        }
+        
+        
 		log.info("[JwtAuthenticationFilter doFilter] token : {}", token);
 		
 		// 2. validateToken으로 토큰 유효성 검사
@@ -44,6 +81,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 			// 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext에 저장
 			Authentication authentication = jwtProvider.getAuthentication(token);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
+			log.info("[JwtAuthenticationFilter doFilter] SecurityContext Token Store");
 		}
 		chain.doFilter(request, response);
 	}
@@ -51,7 +89,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 	// Request Header에서 토큰 정보 추출
 	private String resolveToken(HttpServletRequest request) {
 		String bearerToken = request.getHeader("Authorization");
-		if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
+		if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
 			return bearerToken.substring(7);
 		}
 		return null;
