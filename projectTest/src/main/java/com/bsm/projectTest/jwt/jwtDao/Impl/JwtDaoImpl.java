@@ -33,8 +33,8 @@ public class JwtDaoImpl implements JwtDao {
 
 	@Override
 	public MemberDto selectUserByUserName(String memberId) {
-		// TODO Auto-generated method stub
-		return null;
+		log.info("[JwtDaoImpl selectUserByUserName] memberId : {}", memberId);
+		return session.selectOne("selectUserByUserName", memberId);
 	}
 
 }

@@ -11,6 +11,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.bsm.projectTest.jwt.handler.JwtAuthenticationFilter;
+import com.bsm.projectTest.jwt.handler.JwtFilter;
 import com.bsm.projectTest.jwt.handler.JwtProvider;
 import com.bsm.projectTest.jwt.service.JwtService;
 import com.bsm.projectTest.security.security.handler.UserLoginFailureHandler;
@@ -27,6 +28,7 @@ public class SecurityConfig {
 	// JWT용 시큐리티 재설정 기존 시큐리티 하단 주석처리
 	private final JwtProvider jwtProvider;
 	private final JwtService jwtService;
+	private final JwtFilter jwtFilter;
 	private final UserLoginSuccessHandler userLoginSuccessHandler;
 	private final UserLoginFailureHandler userLoginFailureHandler;
 	
@@ -38,14 +40,14 @@ public class SecurityConfig {
 			// JWT를 사용하기 때문에 세션을 사용하지 않는다는 설정
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 	    		.and()
-	    	.formLogin()
+//	    	.formLogin()
 //	    		.loginPage("/login")
-	    		.loginProcessingUrl("/jwt/login")
-	    		.usernameParameter("memberId")
-				.passwordParameter("password")
-				.successHandler(userLoginSuccessHandler) // 로그인 성공시 실행되는 핸들러
-				.failureHandler(userLoginFailureHandler) // 로그인 실패시 실행되는 핸들러
-	    		.and()
+//	    		.loginProcessingUrl("/jwt/login")
+//	    		.usernameParameter("memberId")
+//				.passwordParameter("password")
+//				.successHandler(userLoginSuccessHandler) // 로그인 성공시 실행되는 핸들러
+//				.failureHandler(userLoginFailureHandler) // 로그인 실패시 실행되는 핸들러
+//	    		.and()
 	    	// 인증 허용 범위 설정
 	    	.authorizeRequests()
 		    	.antMatchers("/jwt/login").permitAll() //POST 로그인 요청
@@ -54,15 +56,15 @@ public class SecurityConfig {
 				.and()
 			// 보안 필터 체인에 사용자 정의 필터를 추가하는 역할
 			// 기본 인증 필터 중 하나인 UsernamePasswordAuthenticationFilter 이전에 사용자 정의 필터인 JwtAuthenticationFilter를 실행하도록 설정
-			.addFilterBefore(new JwtAuthenticationFilter(jwtProvider, jwtService), UsernamePasswordAuthenticationFilter.class);
+			.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 		return httpSecurity.build();
 	}
 	
-//	@Bean
-//	// JWT를 사용하기 위해 기본적인 password encoder가 필요
-//	public PasswordEncoder passwordEncoder() {
-//		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-//	}
+	@Bean
+	// JWT를 사용하기 위해 기본적인 password encoder가 필요
+	public PasswordEncoder passwordEncoder() {
+		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+	}
 
 //	@Bean
 //	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
