@@ -33,11 +33,49 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JwtProvider {
 	private final Key key;
+	private String secretKey;
+	private Long expiredMs = 1000 * 60 * 60L;
 	
 	public JwtProvider(@Value("${jwt.secret}") String secretKey) {
 		log.info("[JwtProvider] secretKey : {}", secretKey);
 		byte[] ketBytes = Decoders.BASE64.decode(secretKey);
 		this.key = Keys.hmacShaKeyFor(ketBytes);
+		this.secretKey = secretKey;
+	}
+	
+	@SuppressWarnings("deprecation")
+	public boolean isExpired(String token) {
+		// Token 만료시간이 지났는지 확인 
+		return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
+				.getBody().getExpiration().before(new Date());
+	}
+	
+	@SuppressWarnings("deprecation")
+	public String getUserName(String token) {
+		String username = String.valueOf(parseClaims(token).get("username"));
+        log.info("getUsernameFormToken subject = {}", username);
+        return username;
+//		return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
+//				.getBody().get("userName", String.class);
+	}
+	
+	@SuppressWarnings("deprecation")
+	public String getRole(String token) {
+		return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
+				.getBody().get("role", String.class);
+	}
+	
+	public String createJwt(MemberDto memberDto) {
+		Claims claims = Jwts.claims();
+		claims.put("userName", memberDto.getUsername());
+		claims.put("role", memberDto.getRoles());
+		
+		return Jwts.builder()
+				.setClaims(claims)
+				.setIssuedAt(new Date(System.currentTimeMillis()))
+				.setExpiration(new Date(System.currentTimeMillis() + expiredMs))
+				.signWith(key, SignatureAlgorithm.HS256)
+				.compact();
 	}
 	
 	// 유저 정보를 가지고 Accesstoken, RefreshToken을 생성하는 메소드

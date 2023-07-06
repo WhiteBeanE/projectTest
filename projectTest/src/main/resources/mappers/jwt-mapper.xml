@@ -8,4 +8,9 @@
 		FROM 	member
 		WHERE	member_id = #{memberId}
 	</select>
+	<select id="selectUserByUserName" parameterType="String" resultType="MemberDto">
+		SELECT 	*
+		FROM 	member
+		WHERE	member_id = #{memberId}
+	</select>
 </mapper>
