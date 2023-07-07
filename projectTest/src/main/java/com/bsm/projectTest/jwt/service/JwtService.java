@@ -8,7 +8,8 @@ import com.bsm.projectTest.jwt.domain.TokenDto;
 
 public interface JwtService {
 	
-	public TokenDto login(MemberDto member);
-	public TokenDto login(MemberLoginDto memberDto);
+//	public TokenDto login(MemberDto member);
+//	public TokenDto login(MemberLoginDto memberDto);
+	public String login(MemberLoginDto memberDto);
 	public UserDetails loadUserByUsername(String memberId);
 }

@@ -37,23 +37,24 @@ public class JwsServiceImpl implements JwtService {
 	private final JwtDao jwtDao;
 	private final SecurityDao securityDao;
 	
-	@Override
-	public TokenDto login(MemberDto member) {
-		
-		UsernamePasswordAuthenticationToken authenticationToken = 
-				new UsernamePasswordAuthenticationToken(member.getMemberId(), member.getPassword(), member.getAuthorities());
-		log.info("[JwsServiceImpl login] authenticationToken : {}", authenticationToken);
-		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-		log.info("[JwsServiceImpl login] authentication : {}", authentication);
-		
-		TokenDto tokenDto = jwtProvider.generateToken(authentication);
-		log.info("[JwsServiceImpl login] tokenDto : {}", tokenDto);
-		
-		return tokenDto;
-	}
+//	@Override
+//	public TokenDto login(MemberDto member) {
+//		
+//		UsernamePasswordAuthenticationToken authenticationToken = 
+//				new UsernamePasswordAuthenticationToken(member.getMemberId(), member.getPassword(), member.getAuthorities());
+//		log.info("[JwsServiceImpl login] authenticationToken : {}", authenticationToken);
+//		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+//		log.info("[JwsServiceImpl login] authentication : {}", authentication);
+//		
+//		TokenDto tokenDto = jwtProvider.generateToken(authentication);
+//		log.info("[JwsServiceImpl login] tokenDto : {}", tokenDto);
+//		
+//		return tokenDto;
+//	}
 	
 	@Override
-	public TokenDto login(MemberLoginDto memberDto) {
+//	public TokenDto login(MemberLoginDto memberDto) {
+	public String login(MemberLoginDto memberDto) {
 		log.info("[JwsServiceImpl login] memberDto : {}", memberDto);
 		
 		String memberId = memberDto.getMemberId();
@@ -80,10 +81,12 @@ public class JwsServiceImpl implements JwtService {
 		
 		// MemberDto member = jwtDao.findMemberByMemberIdNoAuthentication(memberId);
 		// 3. 인증 정보를 기반으로 JWT 생성
-		TokenDto tokenDto = jwtProvider.generateToken(authentication);
+		//TokenDto tokenDto = jwtProvider.generateToken(authentication);
 		// TokenDto tokenDto = jwtProvider.generateToken(member);
+//		String token = jwtProvider.generateToken(authentication);
+		String token = jwtProvider.createJwt(authentication);
 		
-		return tokenDto;
+		return token;
 	}
 
 	@Override

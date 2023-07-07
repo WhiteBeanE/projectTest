@@ -53,11 +53,11 @@ public class UserLoginSuccessHandler implements AuthenticationSuccessHandler{
 			requestCache.removeRequest(request, response);
 		}
 		//인증성공한 member의 정보를 가지고 토큰 생성 후 반환
-		TokenDto tokenDto = jwtService.login(memberInfo);
-		
-		response.setHeader("Authorization", "Bearer " + tokenDto);
-		
-		log.info("[UserLoginSuccessHandler onAuthenticationSuccess] tokenDto : {}", tokenDto);
+//		TokenDto tokenDto = jwtService.login(memberInfo);
+//		
+//		response.setHeader("Authorization", "Bearer " + tokenDto);
+//		
+//		log.info("[UserLoginSuccessHandler onAuthenticationSuccess] tokenDto : {}", tokenDto);
 //		response.setHeader("Authorization", tokenDto.toString());
 		
 //		// JWT 쿠키 저장(쿠키 명 : token)
