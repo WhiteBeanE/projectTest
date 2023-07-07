@@ -63,7 +63,7 @@
 </head>
 <body class="text-center">
 	<main class="form-signin">
-		<form action="/login" method="POST">
+		<form action="/jwt/login" method="POST">
 			<h1 class="h3 mb-3 fw-normal">로그인</h1>
 	
 			<div class="form-floating">

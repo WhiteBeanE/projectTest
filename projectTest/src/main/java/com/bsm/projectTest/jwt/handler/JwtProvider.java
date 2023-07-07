@@ -50,10 +50,8 @@ public class JwtProvider {
 				.getBody().getExpiration().before(new Date());
 	}
 	
-	@SuppressWarnings("deprecation")
 	public String getUserName(String token) {
-		String username = String.valueOf(parseClaims(token).get("username"));
-        log.info("getUsernameFormToken subject = {}", username);
+		String username = String.valueOf(parseClaims(token).get("userName"));
         return username;
 //		return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
 //				.getBody().get("userName", String.class);
@@ -65,6 +63,24 @@ public class JwtProvider {
 				.getBody().get("role", String.class);
 	}
 	
+	public String createJwt(Authentication authentication) {
+		
+		// 권한 가져오기
+		String authorities = authentication.getAuthorities().stream()
+				.map(GrantedAuthority::getAuthority)
+				.collect(Collectors.joining(","));
+		String userName = authentication.getName();
+		Claims claims = Jwts.claims();
+		claims.put("userName",userName);
+		claims.put("role", authorities);
+		
+		return Jwts.builder()
+				.setClaims(claims)
+				.setIssuedAt(new Date(System.currentTimeMillis()))
+				.setExpiration(new Date(System.currentTimeMillis() + expiredMs))
+				.signWith(key, SignatureAlgorithm.HS256)
+				.compact();
+	}
 	public String createJwt(MemberDto memberDto) {
 		Claims claims = Jwts.claims();
 		claims.put("userName", memberDto.getUsername());
@@ -79,7 +95,8 @@ public class JwtProvider {
 	}
 	
 	// 유저 정보를 가지고 Accesstoken, RefreshToken을 생성하는 메소드
-	public TokenDto generateToken(Authentication authentication) {
+//	public TokenDto generateToken(Authentication authentication) {
+	public String generateToken(Authentication authentication) {
 		// 권한 가져오기
 		String authorities = authentication.getAuthorities().stream()
 				.map(GrantedAuthority::getAuthority)
@@ -101,7 +118,8 @@ public class JwtProvider {
 				.signWith(key, SignatureAlgorithm.HS256)
 				.compact();
 		TokenDto tokenDto = new TokenDto("Bearer", accessToken, refreshToken);
-		return tokenDto;
+		return accessToken;
+//		return tokenDto;
 //		return TokenDto.builder()
 //				.grantType("Bearer")
 //				.accessToken(accessToken)
@@ -186,8 +204,8 @@ public class JwtProvider {
      * Claim 에서 username 가져오기
      */
     public String getUsernameFromToken(String token) {
-        String username = String.valueOf(parseClaims(token).get("username"));
-        log.info("getUsernameFormToken subject = {}", username);
-        return username;
+        String userName = String.valueOf(parseClaims(token).get("userName"));
+        log.info("getUsernameFormToken subject = {}", userName);
+        return userName;
     }
 } // Class

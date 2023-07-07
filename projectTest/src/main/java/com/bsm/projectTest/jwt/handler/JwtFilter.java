@@ -63,18 +63,22 @@ public class JwtFilter extends OncePerRequestFilter{
 //		}
 		
 		// userName Token에서 꺼내기
-		String userName = jwtProvider.getUsernameFromToken(token);
+//		String userName = jwtProvider.getUsernameFromToken(token);
+		String userName = jwtProvider.getUserName(token);
 		log.info("[JwtFilter doFilterInternal] userName : {}", userName);
 		
 		// 권한 부여
-		UsernamePasswordAuthenticationToken authenticationToken = 
-				new UsernamePasswordAuthenticationToken(userName, new SimpleGrantedAuthority(jwtProvider.getRole(token)));
-		
+//		UsernamePasswordAuthenticationToken authenticationToken = 
+//				new UsernamePasswordAuthenticationToken(userName, new SimpleGrantedAuthority(jwtProvider.getRole(token)));
+		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userName, null, List.of(new SimpleGrantedAuthority(jwtProvider.getRole(token))));
+		log.info("[JwtFilter doFilterInternal] authenticationToken : {}", authenticationToken);
 //		UsernamePasswordAuthenticationToken authenticationToken = 
 //				new UsernamePasswordAuthenticationToken(userName, null, jwtUtil.getRole(token).name());
 		// Detail 설정
 		authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+		log.info("[JwtFilter doFilterInternal] authenticationToken : {}", authenticationToken);
 		SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+		log.info("[JwtFilter doFilterInternal] authenticationToken : {}", authenticationToken);
 		filterChain.doFilter(request, response);
 		
 	}

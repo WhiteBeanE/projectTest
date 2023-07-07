@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -50,21 +51,29 @@ public class SecurityConfig {
 //	    		.and()
 	    	// 인증 허용 범위 설정
 	    	.authorizeRequests()
-		    	.antMatchers("/jwt/login").permitAll() //POST 로그인 요청
+		    	.antMatchers("/jwt/login", "/login").permitAll() //POST 로그인 요청
 				.antMatchers("/dt/**").hasAnyRole("doctor")
 				.anyRequest().authenticated()
 				.and()
 			// 보안 필터 체인에 사용자 정의 필터를 추가하는 역할
 			// 기본 인증 필터 중 하나인 UsernamePasswordAuthenticationFilter 이전에 사용자 정의 필터인 JwtAuthenticationFilter를 실행하도록 설정
-			.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+			.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+			.headers()
+			.defaultsDisabled()
+			.contentTypeOptions();
 		return httpSecurity.build();
 	}
 	
 	@Bean
-	// JWT를 사용하기 위해 기본적인 password encoder가 필요
 	public PasswordEncoder passwordEncoder() {
-		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+		return new BCryptPasswordEncoder();
 	}
+	
+//	@Bean
+//	// JWT를 사용하기 위해 기본적인 password encoder가 필요
+//	public PasswordEncoder passwordEncoder() {
+//		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+//	}
 
 //	@Bean
 //	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
