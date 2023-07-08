@@ -12,4 +12,5 @@ public interface JwtService {
 //	public TokenDto login(MemberLoginDto memberDto);
 	public String login(MemberLoginDto memberDto);
 	public UserDetails loadUserByUsername(String memberId);
+	public String login(MemberDto memberInfo);
 }

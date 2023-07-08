@@ -34,7 +34,7 @@ public class JwtFilter extends OncePerRequestFilter{
 		// Token 확인
 		// header에서  authorization꺼내기
 		final String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-		log.info("[JwtFilter doFilterInternal] authorization : {}", authorization );
+		log.info("[JwtFilter doFilterInternal] authorization : {}", authorization);
 		
 		// !ahthorization.startsWith("Bearer ") 얘는 포스트맨 쓸 때 팰요가 그다지 없네 authorization 종류별로 하는거라
 		if(authorization == null || !authorization.startsWith("Bearer ")) {
