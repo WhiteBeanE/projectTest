@@ -41,14 +41,14 @@ public class SecurityConfig {
 			// JWT를 사용하기 때문에 세션을 사용하지 않는다는 설정
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 	    		.and()
-//	    	.formLogin()
+	    	.formLogin()
 //	    		.loginPage("/login")
-//	    		.loginProcessingUrl("/jwt/login")
-//	    		.usernameParameter("memberId")
-//				.passwordParameter("password")
-//				.successHandler(userLoginSuccessHandler) // 로그인 성공시 실행되는 핸들러
-//				.failureHandler(userLoginFailureHandler) // 로그인 실패시 실행되는 핸들러
-//	    		.and()
+	    		.loginProcessingUrl("/jwt/login")
+	    		.usernameParameter("memberId")
+				.passwordParameter("password")
+				.successHandler(userLoginSuccessHandler) // 로그인 성공시 실행되는 핸들러
+				.failureHandler(userLoginFailureHandler) // 로그인 실패시 실행되는 핸들러
+	    		.and()
 	    	// 인증 허용 범위 설정
 	    	.authorizeRequests()
 		    	.antMatchers("/jwt/login", "/login").permitAll() //POST 로그인 요청
@@ -64,10 +64,10 @@ public class SecurityConfig {
 		return httpSecurity.build();
 	}
 	
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+//	@Bean
+//	public PasswordEncoder passwordEncoder() {
+//		return new BCryptPasswordEncoder();
+//	}
 	
 //	@Bean
 //	// JWT를 사용하기 위해 기본적인 password encoder가 필요

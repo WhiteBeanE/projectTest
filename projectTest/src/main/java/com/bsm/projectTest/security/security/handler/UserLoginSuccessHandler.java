@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
@@ -16,6 +17,7 @@ import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
 
 import com.bsm.projectTest.jwt.domain.MemberDto;
+import com.bsm.projectTest.jwt.domain.MemberLoginDto;
 import com.bsm.projectTest.jwt.domain.TokenDto;
 import com.bsm.projectTest.jwt.service.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 public class UserLoginSuccessHandler implements AuthenticationSuccessHandler{
 	
 	private final JwtService jwtService;
-	private final ObjectMapper objectMapper;
 	
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -53,35 +54,20 @@ public class UserLoginSuccessHandler implements AuthenticationSuccessHandler{
 			requestCache.removeRequest(request, response);
 		}
 		//인증성공한 member의 정보를 가지고 토큰 생성 후 반환
-//		TokenDto tokenDto = jwtService.login(memberInfo);
-//		
-//		response.setHeader("Authorization", "Bearer " + tokenDto);
+		String jwt = jwtService.login(memberInfo);
+		log.info("[UserLoginSuccessHandler onAuthenticationSuccess] jwt : {}", jwt);
+//		HttpHeaders headers = new HttpHeaders();
+//		headers.add("Authorization", "Bearer " + jwt);
+		response.setHeader("Authorization", "Bearer " + jwt);
 //		
 //		log.info("[UserLoginSuccessHandler onAuthenticationSuccess] tokenDto : {}", tokenDto);
 //		response.setHeader("Authorization", tokenDto.toString());
-		
-//		// JWT 쿠키 저장(쿠키 명 : token)
-//		Cookie cookie = new Cookie("Token", "Bearer " + tokenDto.getAccessToken());
-//		cookie.setPath("/");
-//		cookie.setMaxAge(60 * 60 * 24 * 1); // 유효기간 1일
-//		// httoOnly 옵션을 추가해 서버만 쿠키에 접근할 수 있게 설정
-//		cookie.setHttpOnly(true);
-//		response.addCookie(cookie);
-		
-//		// 토큰을 JSON 형식으로 변환
-//        String tokenJson = objectMapper.writeValueAsString(tokenDto);
 //
 //        // 응답 데이터 설정
 //        response.setContentType("application/json");
 //        response.setCharacterEncoding("UTF-8");
 //        response.getWriter().write(tokenJson);
         
-//		HttpSession session = request.getSession();
-//		session.setAttribute("member", memberInfo.getMemberDto());
-//		session.setAttribute("memberId", memberInfo.getMemberDto().getMemberId());
-//		session.setAttribute("memberUid", memberInfo.getMemberDto().getMemberUid());
-//		session.setAttribute("memberCompanyCode", memberInfo.getMemberDto().getCompanyCode());
-//		log.info("[onAuthenticationSuccess] member : {}", memberInfo.getMemberDto());
 		response.sendRedirect(redirectUrl);
 		
 	}

@@ -88,6 +88,24 @@ public class JwsServiceImpl implements JwtService {
 		
 		return token;
 	}
+	
+	public String login(MemberDto memberDto) {
+		log.info("[JwsServiceImpl login] memberDto : {}", memberDto);
+		
+		String memberId = memberDto.getMemberId();
+		String password = memberDto.getPassword();
+		
+		
+		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(memberId, password, memberDto.getAuthorities());
+		log.info("[JwtFilter doFilterInternal] authenticationToken : {}", authenticationToken);
+		
+		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+		log.info("[JwsServiceImpl login] authentication : {}", authentication);
+		
+		String token = jwtProvider.createJwt(authentication);
+		
+		return token;
+	}
 
 	@Override
 	public UserDetails loadUserByUsername(String memberId) {
