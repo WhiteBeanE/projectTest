@@ -4,7 +4,6 @@ import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +16,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.bsm.projectTest.jwt.domain.MemberDto;
-import com.bsm.projectTest.jwt.domain.TokenDto;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -113,11 +111,11 @@ public class JwtProvider {
 				.signWith(key, SignatureAlgorithm.HS256)
 				.compact();
 		// Refresh Token 생성
-		String refreshToken = Jwts.builder()
-				.setExpiration(new Date(now + 86400000))
-				.signWith(key, SignatureAlgorithm.HS256)
-				.compact();
-		TokenDto tokenDto = new TokenDto("Bearer", accessToken, refreshToken);
+//		String refreshToken = Jwts.builder()
+//				.setExpiration(new Date(now + 86400000))
+//				.signWith(key, SignatureAlgorithm.HS256)
+//				.compact();
+//		TokenDto tokenDto = new TokenDto("Bearer", accessToken, refreshToken);
 		return accessToken;
 //		return tokenDto;
 //		return TokenDto.builder()

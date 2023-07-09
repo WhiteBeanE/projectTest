@@ -1,13 +1,9 @@
 package com.bsm.projectTest.webSocket.handler;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -21,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 public class WaitListWebSocketHandler extends TextWebSocketHandler {
 	
 	//Session 관리를 위한 Map
-	private final Map<String, WebSocketSession> sessionMap = new ConcurrentHashMap<>();
+//	private final Map<String, WebSocketSession> sessionMap = new ConcurrentHashMap<>();
 	private final List<WebSocketSession> webSocketSession;
 	
 	@Override
