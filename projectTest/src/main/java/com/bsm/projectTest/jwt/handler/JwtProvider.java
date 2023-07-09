@@ -93,7 +93,6 @@ public class JwtProvider {
 	}
 	
 	// 유저 정보를 가지고 Accesstoken, RefreshToken을 생성하는 메소드
-//	public TokenDto generateToken(Authentication authentication) {
 	public String generateToken(Authentication authentication) {
 		// 권한 가져오기
 		String authorities = authentication.getAuthorities().stream()
@@ -125,33 +124,6 @@ public class JwtProvider {
 //				.build();
 	}
 	
-//	public TokenDto generateToken(MemberDto member) {
-//		// 권한 가져오기
-//		String authorities = member.getRoles();
-//		
-//		long now = (new Date().getTime());
-//		
-//		// Access Token 생성
-//		Date accessTokenExpiresIn = new Date(now + 86400000);
-//		String accessToken = Jwts.builder()
-//				.setSubject(member.getMemberId())
-//				.claim("auth", authorities)
-//				.setExpiration(accessTokenExpiresIn)
-//				.signWith(key, SignatureAlgorithm.HS256)
-//				.compact();
-//		
-//		// Refresh Token 생성
-//		String refreshToken = Jwts.builder()
-//				.setExpiration(new Date(now + 86400000))
-//				.signWith(key, SignatureAlgorithm.HS256)
-//				.compact();
-//		
-//		return TokenDto.builder()
-//				.grantType("Bearer")
-//				.accessToken(accessToken)
-//				.refreshToken(refreshToken)
-//				.build();
-//	}
 	
 	// JWT 토근을 복호화하여 토큰에 들어있는 정보를 꺼내는 메소드
 	public Authentication getAuthentication(String accessToken) {
@@ -198,9 +170,6 @@ public class JwtProvider {
 		}
 	}
 	
-	   /**
-     * Claim 에서 username 가져오기
-     */
     public String getUsernameFromToken(String token) {
         String userName = String.valueOf(parseClaims(token).get("userName"));
         log.info("getUsernameFormToken subject = {}", userName);

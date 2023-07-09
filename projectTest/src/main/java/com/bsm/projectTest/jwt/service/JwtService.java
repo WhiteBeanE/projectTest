@@ -5,5 +5,4 @@ import com.bsm.projectTest.jwt.domain.MemberLoginDto;
 public interface JwtService {
 	
 	public String login(MemberLoginDto memberDto);
-
 }

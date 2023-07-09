@@ -36,7 +36,6 @@ public class JwtFilter extends OncePerRequestFilter{
 		final String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
 		log.info("[JwtFilter doFilterInternal] authorization : {}", authorization);
 		
-		// !ahthorization.startsWith("Bearer ") 얘는 포스트맨 쓸 때 팰요가 그다지 없네 authorization 종류별로 하는거라
 		if(authorization == null || !authorization.startsWith("Bearer ")) {
 			log.error("[JwtFilter doFilterInternal] authorization is Null or NOT startsWith 'Bearer '");
 			filterChain.doFilter(request, response);
@@ -55,28 +54,15 @@ public class JwtFilter extends OncePerRequestFilter{
 			log.error("[JwtFilter doFilterInternal] authorization is Expired");
 			return;
 		}
-		// 이러면 로그가 안뜨고 익셉션 걸려서 끝나버림
-//		if(jwtUtil.isExpired(token)) {
-//			log.error("[JwtFilter doFilterInternal] authorization is Expired");
-//			filterChain.doFilter(request, response);
-//			return;
-//		}
 		
 		// userName Token에서 꺼내기
-//		String userName = jwtProvider.getUsernameFromToken(token);
 		String userName = jwtProvider.getUserName(token);
 		log.info("[JwtFilter doFilterInternal] userName : {}", userName);
 		
 		// 권한 부여
-//		UsernamePasswordAuthenticationToken authenticationToken = 
-//				new UsernamePasswordAuthenticationToken(userName, new SimpleGrantedAuthority(jwtProvider.getRole(token)));
 		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userName, null, List.of(new SimpleGrantedAuthority(jwtProvider.getRole(token))));
-		log.info("[JwtFilter doFilterInternal] authenticationToken : {}", authenticationToken);
-//		UsernamePasswordAuthenticationToken authenticationToken = 
-//				new UsernamePasswordAuthenticationToken(userName, null, jwtUtil.getRole(token).name());
 		// Detail 설정
 		authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-		log.info("[JwtFilter doFilterInternal] authenticationToken : {}", authenticationToken);
 		SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 		log.info("[JwtFilter doFilterInternal] authenticationToken : {}", authenticationToken);
 		filterChain.doFilter(request, response);
