@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bsm.projectTest.jwt.domain.MemberLoginDto;
-import com.bsm.projectTest.jwt.domain.TokenDto;
 import com.bsm.projectTest.jwt.service.JwtService;
 
 import lombok.RequiredArgsConstructor;

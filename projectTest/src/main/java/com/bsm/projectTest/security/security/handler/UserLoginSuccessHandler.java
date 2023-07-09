@@ -3,10 +3,8 @@ package com.bsm.projectTest.security.security.handler;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
@@ -17,10 +15,6 @@ import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
 
 import com.bsm.projectTest.jwt.domain.MemberDto;
-import com.bsm.projectTest.jwt.domain.MemberLoginDto;
-import com.bsm.projectTest.jwt.domain.TokenDto;
-import com.bsm.projectTest.jwt.service.JwtService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class UserLoginSuccessHandler implements AuthenticationSuccessHandler{
-	
-	private final JwtService jwtService;
 	
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -53,21 +45,6 @@ public class UserLoginSuccessHandler implements AuthenticationSuccessHandler{
 			//메모리 누수 방지를 위한 session clearing(현재 로직에서는 session 객체를 사용할 필요가없어 사용하지 않았으나, 필요하면 사용 후 제거)
 			requestCache.removeRequest(request, response);
 		}
-		//인증성공한 member의 정보를 가지고 토큰 생성 후 반환
-		String jwt = jwtService.login(memberInfo);
-		log.info("[UserLoginSuccessHandler onAuthenticationSuccess] jwt : {}", jwt);
-//		HttpHeaders headers = new HttpHeaders();
-//		headers.add("Authorization", "Bearer " + jwt);
-		response.setHeader("Authorization", "Bearer " + jwt);
-//		
-//		log.info("[UserLoginSuccessHandler onAuthenticationSuccess] tokenDto : {}", tokenDto);
-//		response.setHeader("Authorization", tokenDto.toString());
-//
-//        // 응답 데이터 설정
-//        response.setContentType("application/json");
-//        response.setCharacterEncoding("UTF-8");
-//        response.getWriter().write(tokenJson);
-        
 		response.sendRedirect(redirectUrl);
 		
 	}
