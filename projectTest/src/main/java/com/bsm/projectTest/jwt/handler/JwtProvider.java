@@ -15,8 +15,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.bsm.projectTest.jwt.domain.MemberDto;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -31,34 +29,24 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JwtProvider {
 	private final Key key;
-	private String secretKey;
-	private Long expiredMs = 1000 * 60 * 60L;
+	private Long expiredMs = 1000 * 60 * 60 * 24L;
 	
 	public JwtProvider(@Value("${jwt.secret}") String secretKey) {
 		log.info("[JwtProvider] secretKey : {}", secretKey);
 		byte[] ketBytes = Decoders.BASE64.decode(secretKey);
 		this.key = Keys.hmacShaKeyFor(ketBytes);
-		this.secretKey = secretKey;
 	}
 	
-	@SuppressWarnings("deprecation")
 	public boolean isExpired(String token) {
-		// Token 만료시간이 지났는지 확인 
-		return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
-				.getBody().getExpiration().before(new Date());
+		return parseClaims(token).getExpiration().before(new Date());
 	}
 	
 	public String getUserName(String token) {
-		String username = String.valueOf(parseClaims(token).get("userName"));
-        return username;
-//		return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
-//				.getBody().get("userName", String.class);
+        return String.valueOf(parseClaims(token).get("userName"));
 	}
 	
-	@SuppressWarnings("deprecation")
 	public String getRole(String token) {
-		return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
-				.getBody().get("role", String.class);
+		return String.valueOf(parseClaims(token).get("role"));
 	}
 	
 	public String createJwt(Authentication authentication) {
@@ -71,18 +59,6 @@ public class JwtProvider {
 		Claims claims = Jwts.claims();
 		claims.put("userName",userName);
 		claims.put("role", authorities);
-		
-		return Jwts.builder()
-				.setClaims(claims)
-				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + expiredMs))
-				.signWith(key, SignatureAlgorithm.HS256)
-				.compact();
-	}
-	public String createJwt(MemberDto memberDto) {
-		Claims claims = Jwts.claims();
-		claims.put("userName", memberDto.getUsername());
-		claims.put("role", memberDto.getRoles());
 		
 		return Jwts.builder()
 				.setClaims(claims)
@@ -150,14 +126,14 @@ public class JwtProvider {
 		try {
 			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 			return true;
-		} catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-			log.info("[JwtProvider vaildateToken] Invaild JWT : {}", e);
+		} catch (SecurityException | MalformedJwtException e) {
+			log.error("[JwtProvider vaildateToken] Invaild JWT : {}", e);
 		} catch (ExpiredJwtException e) {
-			log.info("[JwtProvider vaildateToken] Expired JWT : {}", e);
+			log.error("[JwtProvider vaildateToken] Expired JWT : {}", e);
 		} catch (UnsupportedJwtException e) {
-			log.info("[JwtProvider vaildateToken] Unsupported JWT : {}", e);
+			log.error("[JwtProvider vaildateToken] Unsupported JWT : {}", e);
 		} catch (IllegalArgumentException e) {
-			log.info("[JwtProvider vaildateToken] JWT claims String is empty : {}", e);
+			log.error("[JwtProvider vaildateToken] JWT claims String is empty : {}", e);
 		}
 		return false;
 	}
@@ -170,9 +146,4 @@ public class JwtProvider {
 		}
 	}
 	
-    public String getUsernameFromToken(String token) {
-        String userName = String.valueOf(parseClaims(token).get("userName"));
-        log.info("getUsernameFormToken subject = {}", userName);
-        return userName;
-    }
 } // Class

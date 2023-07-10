@@ -27,12 +27,13 @@ public class SecurityConfig {
 		httpSecurity
 			.httpBasic().disable() // HTTP 기본 인증을 비활성화
 			.csrf().disable() // csrf 보호 기능을 비활성화
+			.formLogin().disable()
 			// JWT를 사용하기 때문에 세션을 사용하지 않는다는 설정
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 	    		.and()
 	    	// 인증 허용 범위 설정
 	    	.authorizeRequests()
-		    	.antMatchers("/jwt/login", "/login").permitAll() //POST 로그인 요청
+		    	.antMatchers("/jwt/login").permitAll()
 				.antMatchers("/dt/**").hasAnyRole("doctor")
 				.anyRequest().authenticated()
 				.and()
