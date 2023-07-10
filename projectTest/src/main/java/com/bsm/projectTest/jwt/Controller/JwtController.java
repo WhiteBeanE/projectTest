@@ -25,16 +25,13 @@ public class JwtController {
 	@PostMapping("/login")
 	public ResponseEntity<String> login(@RequestBody MemberLoginDto memberDto) {
 		log.info("[JwtController login] memberDto : {}", memberDto);
-		//TokenDto tokenDto = jwtService.login(memberDto);
 		String jwt = jwtService.login(memberDto);
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", "Bearer " + jwt);
-		log.debug("[login] jwt: {}", jwt);
 		return ResponseEntity
 			.status(HttpStatus.OK)
 			.headers(headers)
 			.build();
-//		return tokenDto;
 	}
 	
 }

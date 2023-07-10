@@ -24,18 +24,11 @@ public class JwsServiceImpl implements JwtService {
 	
 	@Override
 	public String login(MemberLoginDto memberDto) {
-		log.info("[JwsServiceImpl login] memberDto : {}", memberDto);
-		
-		String memberId = memberDto.getMemberId();
-		String password = memberDto.getPassword();
 		
 		// 1. Login ID/PW를 기반으로 Authentication 객체 생성
 		// authentication는 인증 여부를 확인하는 authenticated 값이  false
-		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(memberId, password);
-		// UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(memberId, password, List.of(new SimpleGrantedAuthority("rn")));
+		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(memberDto.getMemberId(), memberDto.getPassword());
 		log.info("[JwsServiceImpl login] authenticationToken : {}", authenticationToken);
-		// authenticationToken.setAuthenticated(true);
-		// 인증을 안했으니 Authenticated이 false가 맞지 근데 어디서 Null이 뜬다는 거야
 		
 		// 2. 실제 검증(사용자 비밀번호 체크)이 이루어지는 부분
 		// authenticate 매소드가 실행될 때 CustomUserDetailsService에서 만든 loadUserByUsername 메소드가 실행

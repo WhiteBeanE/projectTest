@@ -24,9 +24,6 @@ public class MemberDto implements UserDetails {
 	
 	private String memberId;
 	private String password;
-	
-//	private String roles;
-//	private List<String> roles = new ArrayList<>();
 	Collection<GrantedAuthority> roles;
 	
 	@Override

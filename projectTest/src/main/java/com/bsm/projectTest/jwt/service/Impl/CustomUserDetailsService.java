@@ -1,7 +1,7 @@
 package com.bsm.projectTest.jwt.service.Impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,30 +27,26 @@ public class CustomUserDetailsService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String memberId) throws UsernameNotFoundException {
 		log.info("[CustomUserDetailsService loadUserByUsername] memberId : {}", memberId);
-		MemberLoginDto member =  jwtDao.findMemberByMemberIdNoAuthentication(memberId);
 		
-		if (member != null) {
-					
-			MemberDto memberDto = createUserDetails(member);
-			log.info("[CustomUserDetailsService loadUserByUsername] memberDto : {}", memberDto);
-			
-			return memberDto;
-		}
-		
-		return null;
+		// return된 UserDetails 객체는 Spring Security가 사용자를 인증(authenticate)하고 권한 부여(authorize)하는 데 사용
+		UserDetails user = jwtDao.findMemberByMemberId(memberId)
+				.map(this::createUserDetails)
+				.orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
+		log.info("[CustomUserDetailsService loadUserByUsername] user : {}", user);
+		return user;
+//		return  jwtDao.findMemberByMemberId(memberId)
+//				.map(this::createUserDetails)
+//				.orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
 	}
 	
-	// 해당하는 User의 데이터가 존재한다면 UserDetails 객체로 만들어서 리턴
-	private MemberDto createUserDetails(MemberLoginDto member) {
-		log.info("[CustomUserDetailsService createUserDetails] memberDto : {}", member);
-		Collection<GrantedAuthority> roles = new ArrayList<>();
-		roles.add(new SimpleGrantedAuthority("ROLE_" + member.getRoles()));
-		MemberDto memberDto = new MemberDto();
-		memberDto.setMemberId(member.getMemberId());
-		memberDto.setPassword(member.getPassword());
-		memberDto.setRoles(roles);
-		return memberDto;
-				
-	}
+    // 해당하는 User 의 데이터가 존재한다면 UserDetails 객체로 만들어서 리턴
+    private UserDetails createUserDetails(MemberLoginDto member) {
+    	Collection<GrantedAuthority> roles = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + member.getRoles()));
+        return MemberDto.builder()
+                .memberId(member.getMemberId())
+                .password(member.getPassword())
+                .roles(roles)
+                .build();
+    }
 
 }
