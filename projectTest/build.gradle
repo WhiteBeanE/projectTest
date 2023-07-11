@@ -46,9 +46,12 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	
-	//jsp 사용
+	// jsp 사용
 	implementation 'javax.servlet:jstl'
     implementation "org.apache.tomcat.embed:tomcat-embed-jasper"
+    
+    // axios 사용
+    implementation 'org.webjars.npm:axios:0.21.4'
 }
 
 tasks.named('test') {

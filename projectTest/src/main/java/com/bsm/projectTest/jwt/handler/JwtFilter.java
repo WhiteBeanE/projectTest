@@ -34,7 +34,6 @@ public class JwtFilter extends OncePerRequestFilter{
 		// Token 확인
 		// header에서  authorization꺼내기
 		final String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-		log.info("[JwtFilter doFilterInternal] authorization : {}", authorization);
 		
 		if(authorization == null || !authorization.startsWith("Bearer ")) {
 			log.error("[JwtFilter doFilterInternal] authorization is Null or NOT startsWith 'Bearer '");
@@ -52,16 +51,14 @@ public class JwtFilter extends OncePerRequestFilter{
 		}
 		// userName Token에서 꺼내기
 		String userName = jwtProvider.getUserName(token);
-		log.info("[JwtFilter doFilterInternal] userName : {}", userName);
 		
 		// 권한 부여
 		UsernamePasswordAuthenticationToken authenticationToken = 
 				new UsernamePasswordAuthenticationToken(userName, null, List.of(new SimpleGrantedAuthority(jwtProvider.getRole(token))));
-		// Detail 설정
+		
 		authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 		// 인증 후 최종 인증 결과(user 객체, 권한 정보)를 담고 SecurityContext 에 저장되어 전역적으로 참조가 가능
 		SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-		log.info("[JwtFilter doFilterInternal] authenticationToken : {}", authenticationToken);
 		filterChain.doFilter(request, response);
 		
 	}

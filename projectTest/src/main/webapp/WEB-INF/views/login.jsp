@@ -89,6 +89,8 @@
 		</form>
 	</main>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script type="text/javascript">
 	$(function() {
 	    let errorCode= "${param.error}";
@@ -110,51 +112,41 @@
 		$('#submit-btn').click(function(){
 	    	const memberId = $('#memberId').val();
 	    	const password = $('#password').val();
-			fetch('/jwt/login', {
-				method: 'POST',
-			    headers: {
-			   		'Content-Type': 'application/json'
-			    },
-			    body: JSON.stringify({ memberId: memberId, password: password })
-		  	})
-			  	.then(response => {
-			    	if (response.ok) {
-			      		// JWT 토큰 헤더에서 추출
-			      		const jwt = response.headers.get('Authorization');
-			      		console.log('JWT: ', jwt);
-			      
-			      		// 로컬 스토리지에 토큰 저장
-			      		localStorage.setItem('jwt', jwt);
-			      
-			      		// 메인 페이지로 이동
-			      		window.location.href = '/';
-			    	} else {
-			      		// 인증 실패 처리
-			      		console.log('Authentication failed');
-			    	}
-		  		})
-			  	.catch(error => {
-			    	console.error('Error:', error);
-			  	});
-			/* $.ajax({
+			
+			$.ajax({
 	    		url : "/jwt/login",
 	    		type : "POST",
 	    		data : JSON.stringify({memberId : memberId, 
 	    				password : password}),
 	    		contentType : 'application/json',
    				success : function(data, textStatus, xhr){
-   					// 토을 로컬 스토리지에 저장
 	   	            const jwt = xhr.getResponseHeader("Authorization");
+	   				// localStorage.setItem("jwt", jwt);
    					console.log("jwt " + jwt);
-	   				localStorage.setItem("jwt", jwt);
-   			      	// 페이지 이동
-   			     	window.location.href = "/";
+   					const expiresHours = 9;
+   				    const expirationDate = new Date(new Date().getTime() + expiresHours * 60 * 60 * 1000);
+   				    const userInfo: UserInfoDto = jwt_decode(authorization);
+   				    Cookies.set("jwt", authorization, {expires: expirationDate});
+   				    Cookies.set("userInfo", JSON.stringify(userInfo), {expires: expirationDate});
+   					
+   					
+	   				axios.get("/", {
+			    	    headers: {
+			    	        Authorization: jwt
+			    	    }
+			    	})
+		      		.then(response => {
+			      		window.location.href = "/";
+		      		 })
+		      		 .catch(error => {
+			      		console.log('Authentication failed');
+		      		 });
    			    },
    			    error: function(xhr, textStatus, errorThrown) {
    			      // 로그인 실패 처리
    			    }
 	    		
-	    	}); */
+	    	});
 	    });
 	});
 </script>
