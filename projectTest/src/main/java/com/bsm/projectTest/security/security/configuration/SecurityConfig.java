@@ -11,6 +11,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.bsm.projectTest.jwt.handler.JwtFilter;
+import com.bsm.projectTest.security.security.handler.CustomAccessDeniedHandler;
+import com.bsm.projectTest.security.security.handler.CustomAuthenticationEntryPoint;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +23,10 @@ public class SecurityConfig {
 	
 	// JWT용 시큐리티 재설정 기존 시큐리티 하단 주석처리
 	private final JwtFilter jwtFilter;
+	// 인증 되지 않은 사용자 접속 시 처리 (JwtFilter에서 JWT로 인증되지 못하면 실행)
+	private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+	// 권한이 없는 사용자 접속 시 처리
+	private final CustomAccessDeniedHandler customAccessDeniedHandler;
 	
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -33,9 +39,14 @@ public class SecurityConfig {
 	    		.and()
 	    	// 인증 허용 범위 설정
 	    	.authorizeRequests()
-		    	.antMatchers("/jwt/login").permitAll()
+		    	.antMatchers("/jwt/login", "/login").permitAll()
 				.antMatchers("/dt/**").hasAnyRole("doctor")
 				.anyRequest().authenticated()
+				.and()
+			//exceptionHandling 설정
+			.exceptionHandling()
+				.authenticationEntryPoint(customAuthenticationEntryPoint)
+				.accessDeniedHandler(customAccessDeniedHandler)
 				.and()
 			// 보안 필터 체인에 사용자 정의 필터를 추가하는 역할
 			// 기본 인증 필터 중 하나인 UsernamePasswordAuthenticationFilter 이전에 사용자 정의 필터인 JwtAuthenticationFilter를 실행하도록 설정

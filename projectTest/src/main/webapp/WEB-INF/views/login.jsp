@@ -84,7 +84,7 @@
 				</label>
 			</div> 
 			
-			<button class="w-100 btn btn-lg btn-primary" type="submit">로그인</button>
+			<button id="submit-btn" class="w-100 btn btn-lg btn-primary" type="button">로그인</button>
 			<p class="mt-5 mb-3 text-muted">&copy; 2023</p>
 		</form>
 	</main>
@@ -107,7 +107,55 @@
 	    }
 	    
 	    $('#error-message').text(errorMessage);
-	    	
+		$('#submit-btn').click(function(){
+	    	const memberId = $('#memberId').val();
+	    	const password = $('#password').val();
+			fetch('/jwt/login', {
+				method: 'POST',
+			    headers: {
+			   		'Content-Type': 'application/json'
+			    },
+			    body: JSON.stringify({ memberId: memberId, password: password })
+		  	})
+			  	.then(response => {
+			    	if (response.ok) {
+			      		// JWT 토큰 헤더에서 추출
+			      		const jwt = response.headers.get('Authorization');
+			      		console.log('JWT: ', jwt);
+			      
+			      		// 로컬 스토리지에 토큰 저장
+			      		localStorage.setItem('jwt', jwt);
+			      
+			      		// 메인 페이지로 이동
+			      		window.location.href = '/';
+			    	} else {
+			      		// 인증 실패 처리
+			      		console.log('Authentication failed');
+			    	}
+		  		})
+			  	.catch(error => {
+			    	console.error('Error:', error);
+			  	});
+			/* $.ajax({
+	    		url : "/jwt/login",
+	    		type : "POST",
+	    		data : JSON.stringify({memberId : memberId, 
+	    				password : password}),
+	    		contentType : 'application/json',
+   				success : function(data, textStatus, xhr){
+   					// 토을 로컬 스토리지에 저장
+	   	            const jwt = xhr.getResponseHeader("Authorization");
+   					console.log("jwt " + jwt);
+	   				localStorage.setItem("jwt", jwt);
+   			      	// 페이지 이동
+   			     	window.location.href = "/";
+   			    },
+   			    error: function(xhr, textStatus, errorThrown) {
+   			      // 로그인 실패 처리
+   			    }
+	    		
+	    	}); */
+	    });
 	});
 </script>
 </body>

@@ -26,6 +26,7 @@ public class JwtController {
 	public ResponseEntity<String> login(@RequestBody MemberLoginDto memberDto) {
 		log.info("[JwtController login] memberDto : {}", memberDto);
 		String jwt = jwtService.login(memberDto);
+		log.info("[JwtController login] jwt : {}", jwt);
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", "Bearer " + jwt);
 		return ResponseEntity

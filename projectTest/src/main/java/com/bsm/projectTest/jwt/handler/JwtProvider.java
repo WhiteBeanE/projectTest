@@ -32,7 +32,6 @@ public class JwtProvider {
 	private Long expiredMs = 1000 * 60 * 60 * 24L;
 	
 	public JwtProvider(@Value("${jwt.secret}") String secretKey) {
-		log.info("[JwtProvider] secretKey : {}", secretKey);
 		byte[] ketBytes = Decoders.BASE64.decode(secretKey);
 		this.key = Keys.hmacShaKeyFor(ketBytes);
 	}
