@@ -23,8 +23,9 @@ public class JwtController {
 	private final JwtService jwtService;
 	
 	@PostMapping("/login")
-	public ResponseEntity<String> login(@RequestBody MemberLoginDto memberDto) {
+	public ResponseEntity<Void> login(@RequestBody MemberLoginDto memberDto) {
 		log.info("[JwtController login] memberDto : {}", memberDto);
+		log.info("IntelliJ Git Test");
 		String jwt = jwtService.login(memberDto);
 		log.info("[JwtController login] jwt : {}", jwt);
 		HttpHeaders headers = new HttpHeaders();
