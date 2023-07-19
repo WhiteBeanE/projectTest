@@ -1,5 +1,7 @@
 package com.bsm.projectTest.security.security.configuration;
 
+import java.util.Arrays;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 import com.bsm.projectTest.jwt.handler.JwtFilter;
 import com.bsm.projectTest.security.security.handler.CustomAccessDeniedHandler;
@@ -30,9 +33,18 @@ public class SecurityConfig {
 	
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+		CorsConfiguration corsConfig = new CorsConfiguration();
+		corsConfig.addAllowedOrigin("http://localhost:3000");
+		corsConfig.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE"));
+		corsConfig.setAllowedHeaders(Arrays.asList("*"));
+		corsConfig.setAllowCredentials(true);
+		corsConfig.addExposedHeader("Authorization");
+		
 		httpSecurity
 			.httpBasic().disable() // HTTP 기본 인증을 비활성화
 			.csrf().disable() // csrf 보호 기능을 비활성화
+			.cors().configurationSource(request -> corsConfig)
+			.and()
 			.formLogin().disable()
 			// JWT를 사용하기 때문에 세션을 사용하지 않는다는 설정
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -40,7 +52,7 @@ public class SecurityConfig {
 	    	// 인증 허용 범위 설정
 	    	.authorizeRequests()
 		    	.antMatchers("/jwt/login", "/login").permitAll()
-				.antMatchers("/dt/**").hasAnyRole("doctor")
+				.antMatchers("/dt/**").hasRole("doctor")
 				.anyRequest().authenticated()
 				.and()
 			//exceptionHandling 설정
