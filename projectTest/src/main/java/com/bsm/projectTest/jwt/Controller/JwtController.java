@@ -1,8 +1,11 @@
 package com.bsm.projectTest.jwt.Controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,5 +37,13 @@ public class JwtController {
 			.headers(headers)
 			.build();
 	}
-	
+	@GetMapping("/user")
+	public ResponseEntity<String> user(HttpServletRequest request){
+		log.info("[JwtController user] Start");
+		int status = jwtService.jwtCheck(request);
+		HttpHeaders headers = new HttpHeaders();
+		log.info("[JwtController user] status : {}", status);
+		return ResponseEntity.status(status).headers(headers).build();
+		
+	}
 }
