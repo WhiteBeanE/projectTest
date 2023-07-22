@@ -1,5 +1,8 @@
 package com.bsm.projectTest.jwt.service.Impl;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -46,6 +49,20 @@ public class JwsServiceImpl implements JwtService {
 		String token = jwtProvider.createJwt(authentication);
 		
 		return token;
+	}
+
+	@Override
+	public int jwtCheck(HttpServletRequest request) {
+		String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
+		if(authorization == null || !authorization.startsWith("Bearer ")) {
+			return 201;
+		} 
+		String jwt = authorization.split(" ")[1];
+		log.info("[JwsServiceImpl jwtCheck] jwt : {}", jwt);
+		if(jwtProvider.vaildateToken(jwt)) {
+			return 200;
+		}
+		return 201;
 	}
 	
 }

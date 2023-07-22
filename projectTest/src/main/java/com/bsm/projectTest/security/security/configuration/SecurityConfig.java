@@ -51,7 +51,7 @@ public class SecurityConfig {
 	    		.and()
 	    	// 인증 허용 범위 설정
 	    	.authorizeRequests()
-		    	.antMatchers("/jwt/login", "/login").permitAll()
+		    	.antMatchers("/jwt/login", "/login", "/jwt/user").permitAll()
 				.antMatchers("/dt/**").hasRole("doctor")
 				.anyRequest().authenticated()
 				.and()
