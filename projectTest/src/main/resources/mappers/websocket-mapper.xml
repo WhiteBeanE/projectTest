@@ -7,7 +7,6 @@
 		SELECT	*
 		FROM	clinic
 		WHERE	status = #{status}
-		AND		medical_date = TO_DATE(SYSDATE, 'RR/MM/DD')
 	</select>
 	<update id="updateClinicByPatient" parameterType="ClinicDto">
 		UPDATE	clinic
