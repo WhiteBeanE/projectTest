@@ -52,6 +52,10 @@ dependencies {
     
     // axios 사용
     implementation 'org.webjars.npm:axios:0.21.4'
+    
+    // excel 읽기
+    implementation 'org.apache.poi:poi:5.2.3'
+    implementation 'org.apache.poi:poi-ooxml:5.2.3'
 }
 
 tasks.named('test') {
