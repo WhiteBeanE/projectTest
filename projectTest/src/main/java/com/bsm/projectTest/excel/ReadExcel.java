@@ -13,6 +13,8 @@ public class ReadExcel {
 	public static void main(String[] args) {
 		try {
 			FileInputStream file = new FileInputStream("C:/Users/SeongMin/Desktop/0601 주문건 모음/" + "스마트스토어_선택주문발주발송관리_20210602_1859.xlsx");
+			String orderPlatform = "스마트스토어";
+			
 			// POI 라이브러리의 IOUtils 클래스를 사용하여 최대 바이트 배열 크기를 설정
 			IOUtils.setByteArrayMaxOverride(Integer.MAX_VALUE);
 			// XSSFWorkbook 클래스를 사용하여 엑셀 워크북을 생성
