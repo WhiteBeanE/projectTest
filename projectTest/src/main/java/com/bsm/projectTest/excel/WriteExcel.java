@@ -2,6 +2,7 @@ package com.bsm.projectTest.excel;
 
 import java.io.FileOutputStream;
 import java.net.URL;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -19,11 +20,11 @@ public class WriteExcel {
 		XSSFSheet sheet = workbook.createSheet("OrderData");
 		// Data 생성
 		Map<String, Object> data = new HashMap<String, Object>();
-		data.put("1", new Object[] {"ID", "NAME", "PHONE"});
-		data.put("2", new Object[] {1, "White", "010-1234-1234"});
-		data.put("3", new Object[] {2, "Bean", "010-1234-4321"});
-		data.put("4", new Object[] {3, "WhiteBean", "010-1333-1333"});
-		data.put("5", new Object[] {4, "John", "010-1224-1224"});
+		data.put("1", new Object[] {"ID", "NAME", "PHONE", "DATE"});
+		data.put("2", new Object[] {1, "White", "010-1234-1234", new Date()});
+		data.put("3", new Object[] {2, "Bean", "010-1234-4321", new Date()});
+		data.put("4", new Object[] {3, "WhiteBean", "010-1333-1333", new Date()});
+		data.put("5", new Object[] {4, "John", "010-1224-1224", new Date()});
 		
 		Set<String> keySet = data.keySet();
 		int rownum = 0;
@@ -37,6 +38,8 @@ public class WriteExcel {
 					cell.setCellValue((String) obj);
 				}else if(obj instanceof Integer){
 					cell.setCellValue((Integer) obj);
+				}else if(obj instanceof Date) {
+					cell.setCellValue((Date) obj);
 				}
 			}
 		}
